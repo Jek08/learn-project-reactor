@@ -12,3 +12,8 @@ plugins {
 
 rootProject.name = "learn-project-reactor"
 include("example1")
+include("example2")
+include("example2")
+include("example2")
+include("devdojo-projreactor-essentials")
+include("techio-reactor3-exercises")
