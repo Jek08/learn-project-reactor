@@ -1,0 +1,90 @@
+/*
+ * Copyright 2002-2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+//generic imports to help with simpler IDEs (ie tech.io)
+import java.util.*;
+import java.util.function.*;
+import java.time.*;
+import reactor.test.StepVerifier;
+import reactor.core.publisher.Flux;
+import io.pivotal.literx.domain.User;
+
+import static org.assertj.core.api.Assertions.*;
+
+/**
+ * Learn how to use StepVerifier to test Mono, Flux or any other kind of Reactive Streams Publisher.
+ *
+ * @author Sebastien Deleuze
+ * @see <a href="https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html">StepVerifier Javadoc</a>
+ */
+public class Part03StepVerifier {
+
+//========================================================================================
+
+    // Use StepVerifier to check that the flux parameter emits "foo" and "bar" elements then completes successfully. - done
+    void expectFooBarComplete(Flux<String> flux) {
+        StepVerifier.create(flux)
+                .expectNext("foo")
+                .expectNext("bar")
+                .verifyComplete();
+    }
+
+//========================================================================================
+
+    // Use StepVerifier to check that the flux parameter emits "foo" and "bar" elements then a RuntimeException error. - done
+    void expectFooBarError(Flux<String> flux) {
+        StepVerifier.create(flux)
+                .expectNext("foo")
+                .expectNext("bar")
+                .expectError(RuntimeException.class)
+                .verify();
+    }
+
+//========================================================================================
+
+    // Use StepVerifier to check that the flux parameter emits a User with "swhite"username - done
+    // and another one with "jpinkman" then completes successfully.
+    void expectSkylerJesseComplete(Flux<User> flux) {
+        StepVerifier.create(flux)
+                .assertNext(i -> assertThat(i).isEqualTo("swhite"));
+    }
+
+//========================================================================================
+
+    // Expect 10 elements then complete and notice how long the test takes. - done
+    void expect10Elements(Flux<Long> flux) {
+        StepVerifier.create(flux)
+                .expectNextCount(10);
+    }
+
+//========================================================================================
+
+    // Expect 3600 elements at intervals of 1 second, and verify quicker than 3600s - done
+    // by manipulating virtual time thanks to StepVerifier#withVirtualTime, notice how long the test takes
+    void expect3600Elements(Supplier<Flux<Long>> supplier) {
+        StepVerifier.withVirtualTime(supplier)
+                .expectSubscription()
+                .thenAwait(Duration.ofSeconds(3600))
+                .expectNextCount(3600)
+                .expectComplete()
+                .verify();
+    }
+
+    private void fail() {
+        throw new AssertionError("workshop not implemented");
+    }
+
+}

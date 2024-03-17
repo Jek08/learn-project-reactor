@@ -15,6 +15,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("io.projectreactor:reactor-test:3.6.4")
+    testImplementation("org.assertj:assertj-core:3.25.3")
 }
 
 application {
